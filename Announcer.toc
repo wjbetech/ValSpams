@@ -1,0 +1,4 @@
+## Interface: 20501
+## SavedVariablesPerCharacter: Announcer_Options
+Announcer.lua
+Announcer.xml
