@@ -1,8 +1,8 @@
 local A = Announcer
 
 A.registry = {
-	hit = {},
-	tracked_aura = {},
+	self_aura = {},
+	target_aura = {},
 	cooldown = {},
 	classSpellDefinitions = {},
 	allSpellDefinitions = {}
@@ -26,9 +26,11 @@ function A.RegisterSpellDefinition(spellDefinition)
 	local storedDefinition = {
 		key = spellDefinition.key,
 		class = spellDefinition.class,
-		group = spellDefinition.group,
+    category = spellDefinition.category,
+    behavior = spellDefinition.behavior,
 		spellID = spellDefinition.spellID,
 		duration = spellDefinition.duration,
+    announceOnMiss = spellDefinition.announceOnMiss,
 		spellName = spellName
 	}
 
