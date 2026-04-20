@@ -4,7 +4,7 @@ This addon aims to replicate the old WakeSpams addon (credit @cyrila from Bloodf
 
 The goal is to handle announcements of defensive cooldowns, crowd-control, trinket-usage, resists of important spells, and taunts.
 
-The public facing 
+Questions should go on the GitHub repo, download page comments, or DM me on discord @ Arviragus#3308.
 
 ## Usage
 
