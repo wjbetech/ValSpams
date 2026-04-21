@@ -1,12 +1,15 @@
 local A = Announcer
 
+if not A then
+	return
+end
+
 A.RegisterSpellDefinition(
   {
     key = "druid_bash",
     class = "DRUID",
     category = "crowd_control",
     behavior = "target_aura",
-    duration = 5,
     flags = {
       announceOnMiss = true,
       announceOnResist = true,
@@ -14,7 +17,26 @@ A.RegisterSpellDefinition(
       announceTarget = true,
       showRaidIcon = true
     },
-    spellID = 8983 })
+    spellID = 8983
+  }
+)
+
+A.RegisterSpellDefinition(
+  {
+    key = "druid_cyclone",
+    class = "DRUID",
+    category = "crowd_control",
+    behavior = "target_aura",
+    flags = {
+      announceOnMiss = true,
+      announceOnResist = true,
+      announceOnImmune = true,
+      announceTarget = true,
+      showRaidIcon = true
+    },
+    spellID = 33786
+  }
+)
 
 A.RegisterSpellDefinition(
   {

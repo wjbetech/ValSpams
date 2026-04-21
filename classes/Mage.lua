@@ -1,5 +1,9 @@
 local A = Announcer
 
+if not A then
+  return
+end
+
 A.RegisterSpellDefinition(
   {
     key = "mage_polymorph",
@@ -28,6 +32,20 @@ A.RegisterSpellDefinition(
   }
 )
 
-if not A then
-	return
-end
+A.RegisterSpellDefinition(
+  {
+    key = "mage_counterspell",
+    class = "MAGE",
+    category = "interrupt",
+    behavior = "cast_success",
+    flags = {
+      announceOnMiss = true,
+      announceOnResist = true,
+      announceOnImmune = true,
+      announceTarget = true,
+      showRaidIcon = true,
+      interruptOnly = true
+    },
+    spellID = 2139
+  }
+)

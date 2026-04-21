@@ -1,10 +1,14 @@
 local A = Announcer
 
+if not A then
+	return
+end
+
 A.RegisterSpellDefinition(
   {
     key = "priest_shackle_undead",
     class = "PRIEST",
-    group = "crowd_control",
+    category = "crowd_control",
     behavior = "target_aura",
     duration = 30,
     flags = {
@@ -22,7 +26,7 @@ A.RegisterSpellDefinition(
   {
     key = "priest_silence",
     class = "PRIEST",
-    group = "interrupt",
+    category = "crowd_control",
     behavior = "target_aura",
     duration = 5,
     flags = {
@@ -40,7 +44,7 @@ A.RegisterSpellDefinition(
   {
     key = "priest_power_infusion",
     class = "PRIEST",
-    group = "offensive",
+    category = "offensive",
     behavior = "target_aura",
     duration = 15,
     flags = {
@@ -53,9 +57,9 @@ A.RegisterSpellDefinition(
 
 A.RegisterSpellDefinition(
   {
-    key = "priest_pain_supression",
+    key = "priest_pain_suppression",
     class = "PRIEST",
-    group = "defensive",
+    category = "defensive",
     behavior = "target_aura",
     duration = 8,
     flags = {
@@ -65,7 +69,3 @@ A.RegisterSpellDefinition(
     spellID = 33206
   }
 )
-
-if not A then
-	return
-end

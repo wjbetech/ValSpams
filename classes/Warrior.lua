@@ -1,5 +1,9 @@
 local A = Announcer
 
+if not A then
+	return
+end
+
 A.RegisterSpellDefinition(
   {
     key = "warrior_pummel",

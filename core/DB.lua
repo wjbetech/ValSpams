@@ -4,7 +4,7 @@ local A = Announcer
 
 A.optionDefaults = {
 	announce = true,
-	debug = false,
+	debug = false,    
 	trackTrinkets = false,
 	showPlayerName = true,
 	showTarget = true,

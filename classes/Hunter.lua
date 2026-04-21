@@ -1,5 +1,9 @@
 local A = Announcer
 
+if not A then
+	return
+end
+
 A.RegisterSpellDefinition({
   key = "hunter_feign_death",
   class = "HUNTER",
@@ -30,6 +34,20 @@ A.RegisterSpellDefinition(
   }
 )
 
-if not A then
-	return
-end
+A.RegisterSpellDefinition(
+  {
+    key = "hunter_freezing_trap",
+    class = "HUNTER",
+    category = "crowd_control",
+    behavior = "target_aura",
+    duration = 30,
+    flags = {
+      announceOnMiss = true,
+      announceOnResist = true,
+      announceOnImmune = true,
+      announceTarget = true,
+      showRaidIcon = true
+    },
+    spellID = 3355
+  }
+)

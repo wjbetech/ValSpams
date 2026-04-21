@@ -39,6 +39,7 @@ localized immune/resist/miss wording and any new menu labels.
 - trinket
 - interrupt
 - important_tank_outcome
+- utility
 
 ### Behaviors
 
@@ -56,3 +57,4 @@ localized immune/resist/miss wording and any new menu labels.
 - announceTarget
 - whisperTarget
 - showRaidIcon
+- interruptOnly

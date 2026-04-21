@@ -1,10 +1,14 @@
 local A = Announcer
 
+if not A then
+	return
+end
+
 A.RegisterSpellDefinition(
   {
     key = "paladin_hammer_of_justice",
     class = "PALADIN",
-    group = "crowd_control",
+    category = "crowd_control",
     behavior = "target_aura",
     flags = {
       announceOnMiss = true,
@@ -22,7 +26,8 @@ A.RegisterSpellDefinition(
   {
     key = "paladin_blessing_of_protection",
     class = "PALADIN",
-    group = "tracked_aura",
+    category = "defensive",
+    behavior = "target_aura",
     duration = 10,
       flags = {
         announceTarget = true,
@@ -37,7 +42,8 @@ A.RegisterSpellDefinition(
   {
     key = "paladin_blessing_of_freedom",
     class = "PALADIN",
-    group = "tracked_aura",
+    category = "defensive",
+    behavior = "target_aura",
     duration = 14,
     flags = {
       announceTarget = true,
@@ -52,7 +58,8 @@ A.RegisterSpellDefinition(
   {
     key = "paladin_blessing_of_sacrifice",
     class = "PALADIN",
-    group = "tracked_aura",
+    category = "defensive",
+    behavior = "target_aura",
     duration = 30,
     flags = {
       announceTarget = true,
@@ -64,9 +71,21 @@ A.RegisterSpellDefinition(
 
 A.RegisterSpellDefinition(
   {
+    key = "paladin_divine_shield",
+    class = "PALADIN",
+    category = "defensive",
+    behavior = "self_aura",
+    duration = 8,
+    spellID = 642
+  }
+)
+
+A.RegisterSpellDefinition(
+  {
     key = "paladin_divine_illumination",
     class = "PALADIN",
-    group = "utility",
+    category = "utility",
+    behavior = "self_aura",
     duration = 15,
     spellID = 31842
   }
@@ -76,7 +95,7 @@ A.RegisterSpellDefinition(
   {
     key = "paladin_avenging_wrath",
     class = "PALADIN",
-    group = "offensive",
+    category = "offensive",
     duration = 20,
     spellID = 31884
   }
@@ -86,7 +105,7 @@ A.RegisterSpellDefinition(
   {
     key = "paladin_divine_intervention",
     class = "PALADIN",
-    group = "utility",
+    category = "utility",
     flags = {
       announceTarget = true,
       showRaidIcon = true
