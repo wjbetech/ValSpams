@@ -23,7 +23,7 @@ The core principles follow this:
 - [x] Refactor registry structure in core/Registry.lua
 - [ ] Remove old registry bucket assumptions
 - [x] Add lookup helpers for new behavior model
-- [ ] Verify class spell definitions still register correctly
+- [x] Verify class spell definitions still register correctly
 - [ ] Plan saved-variable migration impact
 
 ## Phase 2: Event Pipeline

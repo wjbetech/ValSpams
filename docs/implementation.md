@@ -37,6 +37,7 @@ localized immune/resist/miss wording and any new menu labels.
 - taunt
 - crowd_control
 - trinket
+- interrupt
 - important_tank_outcome
 
 ### Behaviors

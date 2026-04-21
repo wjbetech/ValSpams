@@ -1,5 +1,82 @@
 local A = Announcer
 
-A.RegisterSpellDefinition({ key = "druid_bash", class = "DRUID", group = "hit", spellID = 8983 })
-A.RegisterSpellDefinition({ key = "druid_growl", class = "DRUID", group = "tracked_aura", spellID = 6795, duration = 3 })
-A.RegisterSpellDefinition({ key = "druid_frenzied_regeneration", class = "DRUID", group = "cooldown", spellID = 22842, duration = 10 })
+A.RegisterSpellDefinition(
+  {
+    key = "druid_bash",
+    class = "DRUID",
+    category = "crowd_control",
+    behavior = "target_aura",
+    duration = 5,
+    flags = {
+      announceOnMiss = true,
+      announceOnResist = true,
+      announceOnImmune = true,
+      announceTarget = true,
+      showRaidIcon = true
+    },
+    spellID = 8983 })
+
+A.RegisterSpellDefinition(
+  {
+    key = "druid_growl",
+    class = "DRUID",
+    category = "taunt",
+    behavior = "target_aura",
+    flags = {
+      announceOnMiss = true,
+      announceOnResist = true,
+      announceOnImmune = true,
+      announceTarget = true,
+      showRaidIcon = true
+    },
+    spellID = 6795
+  }
+)
+
+A.RegisterSpellDefinition(
+  {
+    key = "druid_frenzied_regeneration",
+    class = "DRUID",
+    category = "defensive",
+    behavior = "self_aura",
+    duration = 10,
+    spellID = 22842
+  }
+)
+
+A.RegisterSpellDefinition(
+  {
+    key = "druid_innervate",
+    class = "DRUID",
+    category = "utility",
+    behavior = "target_aura",
+    duration = 20,
+    flags = {
+      announceTarget = true,
+      showRaidIcon = true
+    },
+    spellID = 29166
+  }
+)
+
+A.RegisterSpellDefinition(
+  {
+    key = "druid_barkskin",
+    class = "DRUID",
+    category = "defensive",
+    behavior = "self_aura",
+    duration = 30,
+    spellID = 22812
+  }
+)
+
+A.RegisterSpellDefinition(
+  {
+    key = "druid_tranquility",
+    class = "DRUID",
+    category = "defensive",
+    behavior = "self_aura",
+    duration = 8,
+    spellID = 740
+  }
+)

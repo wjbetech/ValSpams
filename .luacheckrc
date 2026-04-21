@@ -1,0 +1,39 @@
+std = "lua51"
+
+globals = {
+   "Announcer",
+   "C_Timer",
+   "CombatLogGetCurrentEventInfo",
+   "CreateFrame",
+   "DEFAULT_CHAT_FRAME",
+   "GetInventoryItemLink",
+   "GetItemSpell",
+   "GetLocale",
+   "GetSpellInfo",
+   "GetSpellLink",
+   "InterfaceOptions_AddCategory",
+   "InterfaceOptionsFrame_OpenToCategory",
+   "IsInGroup",
+   "IsInRaid",
+   "LOCALIZED_CLASS_NAMES_MALE",
+   "Settings",
+   "SendChatMessage",
+   "SLASH_ANNOUNCER1",
+   "SlashCmdList",
+   "UIParent",
+   "UIDropDownMenu_AddButton",
+   "UIDropDownMenu_CreateInfo",
+   "UIDropDownMenu_Initialize",
+   "UIDropDownMenu_SetSelectedValue",
+   "UIDropDownMenu_SetText",
+   "UIDropDownMenu_SetWidth",
+   "UnitGUID",
+   "UnitName",
+   "wipe",
+}
+
+files["Announcer.lua"].globals = {
+   "Announcer_OnLoad",
+   "Announcer_OnEvent",
+   "Announcer_SlashCommand",
+}
