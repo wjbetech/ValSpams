@@ -1,12 +1,20 @@
+---@diagnostic disable: undefined-global
 local A = Announcer
 local trackedAuraTimers = A.state.trackedAuraTimers
 
 function A.GetCombatLogContext()
-  local timestamp, combatEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName,
-  -- CoombatLogGetCurrentEventInfo is a WoW API global
----@diagnostic disable-next-line: undefined-global
-  destFlags, destRaidFlags, extraArg1, extraArg2, extraArg3, extraArg4 = CombatLogGetCurrentEventInfo()
-  
+  -- don't reformat that, Lua linter is a pain
+  local timestamp, combatEvent,
+  hideCaster, sourceGUID,
+  sourceName, sourceFlags,
+  sourceRaidFlags, destGUID,
+  destName, destFlags,
+  destRaidFlags, extraArg1,
+  extraArg2, extraArg3,
+  extraArg4
+  = CombatLogGetCurrentEventInfo()
+
+  -- direct map of combat log event info from above
   return {
     timestamp = timestamp,
     combatEvent = combatEvent,
@@ -31,13 +39,91 @@ function A.HandleSourceCombatEvent(context, playerGUID)
     return nil
   end
 
+  local castSuccessDefinition = A.GetBehaviorDefinition("cast_success", context.extraArg2)
+  local targetAuraDefinition = A.GetBehaviorDefinition("target_aura", context.extraArg2)
+
+  -- this should refer to successful casts
+  if context.combatEvent == "SPELL_CAST_SUCCESS" and castSuccessDefinition then
+    return A.FormatCastMessage(
+      context.sourceName,
+      context.extraArg1,
+      context.extraArg2,
+      context.destName,
+      castSuccessDefinition.duration
+    )
+  end
+
+  -- this should refer to the target-aura
+  if (context.combatEvent == "SPELL_AURA_APPLIED"
+  or context.combatEvent == "SPELL_AURA_REFRESH")
+  and targetAuraDefinition
+  then
+
+    if context.combatEvent == "SPELL_AURA_REFRESH"
+    and targetAuraDefinition
+    then
+      A.ClearTrackedAuraTimers(context.extraArg2, context.extraArg1, context.destGUID)
+    end
+
+    if Announcer_Options.announceMode == "countdown" then
+      A.ScheduleTrackedAuraCountdown(
+        context.sourceName,
+        context.extraArg2,
+        context.extraArg1,
+        context.destName,
+        context.destGUID,
+        targetAuraDefinition.duration
+      )
+    end
+
+    return A.FormatCastMessage(
+      context.sourceName,
+      context.extraArg1,
+      context.extraArg2,
+      context.destName,
+      targetAuraDefinition.duration
+    )
+  end
+
+  if context.combatEvent == "SPELL_AURA_REMOVED"
+  and targetAuraDefinition
+  then
+    A.ClearTrackedAuraTimers(context.extraArg2, context.extraArg1, context.destGUID)
+
+    if Announcer_Options.announceMode == "ending" then
+      return A.FormatEndedMessage(
+        context.sourceName,
+        context.extraArg1,
+        context.extraArg2,
+        context.destName
+      )
+    end
+  end
+
   return nil
 end
 
 function A.HandleDestCombatEvent(context, playerGUID)
   if context.destGUID ~= playerGUID then
-    return
+    return nil
   end
+
+  local selfAuraDefinition = A.GetBehaviorDefinition("self_aura", context.extraArg2)
+
+  if (context.combatEvent == "SPELL_AURA_APPLIED" 
+  or context.combatEvent == "SPELL_AURA_REFRESH")
+  and selfAuraDefinition
+  then
+    return A.FormatCastMessage(
+      context.sourceName,
+      context.extraArg1,
+      context.extraArg2,
+      nil,
+      selfAuraDefinition.duration
+    )
+  end
+
+  return nil
 end
 
 
@@ -49,8 +135,13 @@ function A.HandleCombatLogEvent()
     return
   end
 
-  A.HandleSourceCombatEvent(context, playerGUID)
-  A.HandleDestCombatEvent(context, playerGUID)
+  local eventMessage = A.HandleSourceCombatEvent(context, playerGUID)
+
+  if eventMessage == nil then
+    eventMessage = A.HandleDestCombatEvent(context, playerGUID)
+  end
+
+  A.BroadcastMessage(eventMessage)
 end
 
 function A.OnEvent(self, event, ...)
