@@ -110,10 +110,25 @@ function A.HandleDestCombatEvent(context, playerGUID)
 
   local selfAuraDefinition = A.GetBehaviorDefinition("self_aura", context.extraArg2)
 
-  if (context.combatEvent == "SPELL_AURA_APPLIED" 
+  if (context.combatEvent == "SPELL_AURA_APPLIED"
   or context.combatEvent == "SPELL_AURA_REFRESH")
   and selfAuraDefinition
   then
+    if context.combatEvent == "SPELL_AURA_REFRESH" then
+      A.ClearTrackedAuraTimers(context.extraArg2, context.extraArg1, context.destGUID)
+    end
+
+    if Announcer_Options.announceMode == "countdown" then
+      A.ScheduleTrackedAuraCountdown(
+        context.sourceName,
+        context.extraArg2,
+        context.extraArg1,
+        nil,
+        context.destGUID,
+        selfAuraDefinition.duration
+      )
+    end
+
     return A.FormatCastMessage(
       context.sourceName,
       context.extraArg1,
