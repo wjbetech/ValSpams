@@ -96,6 +96,7 @@ A.RegisterSpellDefinition(
     key = "paladin_avenging_wrath",
     class = "PALADIN",
     category = "offensive",
+    behavior = "self_aura",
     duration = 20,
     spellID = 31884
   }
@@ -106,10 +107,25 @@ A.RegisterSpellDefinition(
     key = "paladin_divine_intervention",
     class = "PALADIN",
     category = "utility",
+    behavior = "target_aura",
     flags = {
       announceTarget = true,
       showRaidIcon = true
     },
     spellID = 19752
+  }
+)
+
+A.RegisterSpellDefinition(
+  {
+    key = "paladin_lay_on_hands",
+    class = "PALADIN",
+    category = "defensive",
+    behavior = "cast_success",
+    flags = {
+      announceTarget = true,
+      showRaidIcon = true
+    },
+    spellID = 633
   }
 )

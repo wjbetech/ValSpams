@@ -8,7 +8,7 @@ A.RegisterSpellDefinition({
   key = "hunter_feign_death",
   class = "HUNTER",
   category = "defensive",
-  behavior = "self_aura",
+  behavior = "cast_success",
   spellID = 5384,
 })
 
