@@ -56,15 +56,3 @@ function A.GetBehaviorDefinition(behavior, spellName)
 
   return A.registry[behavior][spellName]
 end
-
-function A.GetHitDefinition(spellName)
-	return A.GetBehaviorDefinition("cast_success", spellName)
-end
-
-function A.GetTrackedAuraDefinition(spellName)
-	return A.GetBehaviorDefinition("target_aura", spellName)
-end
-
-function A.GetCooldownDefinition(spellName)
-	return A.GetBehaviorDefinition("self_aura", spellName)
-end

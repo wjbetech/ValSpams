@@ -4,7 +4,7 @@ function A.RenderTemplate(template, tokens)
   local renderedText = template
 
   for token, value in pairs(tokens) do
-    renderedText = string.gsub(renderedText, token, tostring(value or """))
+    renderedText = string.gsub(renderedText, token, tostring(value or ""))
   end
 
   return renderedText
@@ -58,25 +58,17 @@ function A.GetDurationSuffix(duration)
 	return " - "..tostring(duration).."s"
 end
 
-function A.FormatCastMessage(sourceName, spellID, spellName, destName, duration)
-  local template = A.L.castMessage
+function A.FormatCastMessage(sourceName, spellID, spellName, destName, duration, missType)
+  local template
 	local actorName = A.GetDisplayActorName(sourceName)
 	local spellText = A.GetSpellText(spellID, spellName)
 	local displayTarget = A.GetDisplayTarget(destName)
-	local durationSuffix = A.GetDurationSuffix(duration)
+	local durationText = A.GetDurationText(duration)
 
 	if displayTarget then
-		if actorName then
-			template = A.L.castOnMessage
-    else
-      template = A.L.castOnMessageNoSource
-    end
+		template = A.L.castOnMessage
   else
-    if actorName then
-      template = A.L.castMessage
-    else
-      template = A.L.castMessageNoSource
-    end
+    template = A.L.castMessage
   end
 
 	return A.RenderTemplate(template,
@@ -84,63 +76,39 @@ function A.FormatCastMessage(sourceName, spellID, spellName, destName, duration)
       ["spell:source"] = actorName,
       ["spell:link"] = spellText,
       ["spell:target"] = displayTarget,
-      ["spell:duration"] = durationSuffix
+      ["spell:duration"] = durationText,
+      ["spell:missType"] = missType
     })
 end
 
-function A.FormatCountdownMessage(sourceName, spellID, spellName, destName, secondsRemaining)
-	local actorName = A.GetDisplayActorName(sourceName)
-	local spellText = A.GetSpellText(spellID, spellName)
-	local displayTarget = A.GetDisplayTarget(destName)
-	if displayTarget then
-		if actorName then
-			return string.format(A.L.countdownMessage, actorName, spellText, displayTarget, secondsRemaining)
-		end
-
-		return string.format(A.L.countdownMessageNoSource, spellText, displayTarget, secondsRemaining)
-	end
-
-	if actorName then
-		return string.format(A.L.countdownNoTargetMessage, actorName, spellText, secondsRemaining)
-	end
-
-	return string.format(A.L.countdownNoTargetMessageNoSource, spellText, secondsRemaining)
-end
-
 function A.FormatEndedMessage(sourceName, spellID, spellName, destName)
-	local actorName = A.GetDisplayActorName(sourceName)
 	local spellText = A.GetSpellText(spellID, spellName)
-	local displayTarget = A.GetDisplayTarget(destName)
-	if displayTarget then
-		if actorName then
-			return string.format(A.L.endedMessage, actorName, spellText, displayTarget)
-		end
-
-		return string.format(A.L.endedMessageNoSource, spellText, displayTarget)
-	end
-
-	if actorName then
-		return string.format(A.L.endedNoTargetMessage, actorName, spellText)
-	end
-
-	return string.format(A.L.endedNoTargetMessageNoSource, spellText)
+  local displayTarget = A.GetDisplayTarget(destName)
+  
+  return A.RenderTemplate(
+    A.L.endedMessage,
+    {
+      ["spell:source"] = A.GetDisplayActorName(sourceName),
+      ["spell:link"] = spellText
+      ["spell:target"] = displayTarget
+      ["spell:duration"] = "",
+      ["spell:missType"] = ""
+    }
+  )
 end
 
 function A.FormatMissMessage(sourceName, spellID, spellName, destName, missType)
-	local actorName = A.GetDisplayActorName(sourceName)
 	local spellText = A.GetSpellText(spellID, spellName)
-	local displayTarget = A.GetDisplayTarget(destName)
-	if displayTarget then
-		if actorName then
-			return string.format(A.L.missMessage, actorName, spellText, displayTarget, tostring(missType))
-		end
+  local displayTarget = A.GetDisplayTarget(destName)
 
-		return string.format(A.L.missMessageNoSource, spellText, displayTarget, tostring(missType))
-	end
-
-	if actorName then
-		return string.format(A.L.missNoTargetMessage, actorName, spellText, tostring(missType))
-	end
-
-	return string.format(A.L.missNoTargetMessageNoSource, spellText, tostring(missType))
+  return A.RenderTemplate(
+    A.L.missMessage,
+    {
+      ["spell:source"] = A.GetDisplayActorName(sourceName),
+      ["spell:link"] = spellText,
+      ["spell:target"] = displayTarget,
+      ["spell:duration"] = "",
+      ["spell:missType"] = missType
+    }
+  )
 end

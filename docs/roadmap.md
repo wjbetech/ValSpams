@@ -21,7 +21,7 @@ The core principles follow this:
 - [x] Define final combat-log behaviors
 - [x] Define final per-spell announcement flags
 - [x] Refactor registry structure in core/Registry.lua
-- [-] Remove old registry bucket assumptions
+- [x] Remove old registry bucket assumptions
 - [x] Add lookup helpers for new behavior model
 - [x] Verify class spell definitions still register correctly
 - [ ] Plan saved-variable migration impact

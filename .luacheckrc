@@ -4,6 +4,7 @@ globals = {
    "Announcer",
    "Announcer_Options",
    "Announcer_OnLoad",
+   "Announcer_OnEvent",
    "C_Timer",
    "CombatLogGetCurrentEventInfo",
    "CreateFrame",
@@ -38,4 +39,5 @@ files["Announcer.lua"].globals = {
    "Announcer_OnLoad",
    "Announcer_OnEvent",
    "Announcer_SlashCommand",
+   "GetSpellInfo",
 }
