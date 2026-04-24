@@ -7,6 +7,11 @@ function A.RenderTemplate(template, tokens)
     renderedText = string.gsub(renderedText, token, tostring(value or ""))
   end
 
+  renderedText = string.gsub(renderedText, "%s+", " ")
+  renderedText = string.gsub(renderedText, "%s+([!%.,:%?])", "%1")
+  renderedText = string.gsub(renderedText, "^%s+", "")
+  renderedText = string.gsub(renderedText, "%s+$", "")
+
   return renderedText
 end
 
@@ -50,15 +55,19 @@ function A.GetDisplayTarget(destName)
 	return nil
 end
 
-function A.GetDurationSuffix(duration)
-	if duration == nil or duration <= 0 then
-		return ""
-	end
+function A.GetMissTypeText(missType)
+  local missTypeLabels = {
+    MISS = A.L.outcomeMiss,
+    DODGE = A.L.outcomeDodge,
+    PARRY = A.L.outcomeParry,
+    RESIST = A.L.outcomeResist,
+    IMMUNE = A.L.outcomeImmune,
+  }
 
-	return " - "..tostring(duration).."s"
+  return missTypeLabels[missType] or tostring(missType or "")
 end
 
-function A.FormatCastMessage(sourceName, spellID, spellName, destName, duration, missType)
+function A.FormatCastMessage(sourceName, spellID, spellName, destName, duration)
   local template
 	local actorName = A.GetDisplayActorName(sourceName)
 	local spellText = A.GetSpellText(spellID, spellName)
@@ -77,7 +86,7 @@ function A.FormatCastMessage(sourceName, spellID, spellName, destName, duration,
       ["spell:link"] = spellText,
       ["spell:target"] = displayTarget,
       ["spell:duration"] = durationText,
-      ["spell:missType"] = missType
+      ["spell:missType"] = ""
     })
 end
 
@@ -89,8 +98,8 @@ function A.FormatEndedMessage(sourceName, spellID, spellName, destName)
     A.L.endedMessage,
     {
       ["spell:source"] = A.GetDisplayActorName(sourceName),
-      ["spell:link"] = spellText
-      ["spell:target"] = displayTarget
+      ["spell:link"] = spellText,
+      ["spell:target"] = displayTarget,
       ["spell:duration"] = "",
       ["spell:missType"] = ""
     }
@@ -100,6 +109,7 @@ end
 function A.FormatMissMessage(sourceName, spellID, spellName, destName, missType)
 	local spellText = A.GetSpellText(spellID, spellName)
   local displayTarget = A.GetDisplayTarget(destName)
+  local missTypeText = A.GetMissTypeText(missType)
 
   return A.RenderTemplate(
     A.L.missMessage,
@@ -108,7 +118,23 @@ function A.FormatMissMessage(sourceName, spellID, spellName, destName, missType)
       ["spell:link"] = spellText,
       ["spell:target"] = displayTarget,
       ["spell:duration"] = "",
-      ["spell:missType"] = missType
+      ["spell:missType"] = missTypeText
+    }
+  )
+end
+
+function A.FormatInterruptMessage(sourceName, destName, interruptedSpellID, interruptedSpellName)
+	local interruptedSpellText = A.GetSpellText(interruptedSpellID, interruptedSpellName)
+  local displayTarget = A.GetDisplayTarget(destName)
+
+  return A.RenderTemplate(
+    A.L.interruptMessage,
+    {
+      ["spell:source"] = A.GetDisplayActorName(sourceName),
+      ["spell:link"] = interruptedSpellText,
+      ["spell:target"] = displayTarget,
+      ["spell:duration"] = "",
+      ["spell:missType"] = ""
     }
   )
 end

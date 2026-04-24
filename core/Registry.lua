@@ -56,3 +56,11 @@ function A.GetBehaviorDefinition(behavior, spellName)
 
   return A.registry[behavior][spellName]
 end
+
+function A.GetTrackedSpellDefinitions()
+	return A.registry.allSpellDefinitions
+end
+
+function A.GetClassSpellDefinitions(classToken)
+	return A.registry.classSpellDefinitions[classToken] or {}
+end

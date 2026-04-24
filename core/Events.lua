@@ -1,6 +1,5 @@
 ---@diagnostic disable: undefined-global
 local A = Announcer
-local trackedAuraTimers = A.state.trackedAuraTimers
 
 function A.GetCombatLogContext()
   -- don't reformat that, Lua linter is a pain
@@ -10,7 +9,7 @@ function A.GetCombatLogContext()
   sourceRaidFlags, destGUID,
   destName, destFlags,
   destRaidFlags, extraArg1,
-  extraArg2, extraArg3,
+  extraArg2, spellSchool,
   extraArg4, extraArg5, extraArg6
   = CombatLogGetCurrentEventInfo()
 
@@ -29,6 +28,7 @@ function A.GetCombatLogContext()
     destRaidFlags = destRaidFlags,
     spellID = extraArg1,
     spellName = extraArg2,
+    spellSchool = spellSchool,
     eventArg1 = extraArg4,
     eventArg2 = extraArg5,
     eventArg3 = extraArg6
@@ -103,7 +103,6 @@ function A.HandleSourceCombatEvent(context, playerGUID)
   then
     local interruptedSpellID = context.eventArg1
     local interruptedSpellName = context.eventArg2
-    local interruptedSpellSchool = context.eventArg3
 
     if castSuccessDefinition.category ~= "interrupt" and
     not castSuccessDefinition.flags.interruptOnly
@@ -111,12 +110,11 @@ function A.HandleSourceCombatEvent(context, playerGUID)
       return nil
     end
 
-    return A.FormatCastMessage(
+    return A.FormatInterruptMessage(
       context.sourceName,
-      context.spellID,
-      context.spellName,
       context.destName,
-      nil
+      interruptedSpellID,
+      interruptedSpellName
     )
   end
 
@@ -125,11 +123,6 @@ function A.HandleSourceCombatEvent(context, playerGUID)
   if context.combatEvent == "SPELL_CAST_SUCCESS"
   and castSuccessDefinition
   then
-
-    local interruptedSpellID = context.eventArg1
-    local interruptedSpellName = context.eventArg2
-    local interruptedSpellSchool = context.eventArg3
-
     -- don't announce interrupts on non-interruptables
     if castSuccessDefinition.flags.interruptOnly
     then
@@ -150,24 +143,6 @@ function A.HandleSourceCombatEvent(context, playerGUID)
   or context.combatEvent == "SPELL_AURA_REFRESH")
   and targetAuraDefinition
   then
-
-    if context.combatEvent == "SPELL_AURA_REFRESH"
-    and targetAuraDefinition
-    then
-      A.ClearTrackedAuraTimers(context.spellName, context.spellID, context.destGUID)
-    end
-
-    if Announcer_Options.announceMode == "countdown" then
-      A.ScheduleTrackedAuraCountdown(
-        context.sourceName,
-        context.spellName,
-        context.spellID,
-        context.destName,
-        context.destGUID,
-        targetAuraDefinition.duration
-      )
-    end
-
     return A.FormatCastMessage(
       context.sourceName,
       context.spellID,
@@ -181,8 +156,6 @@ function A.HandleSourceCombatEvent(context, playerGUID)
   if context.combatEvent == "SPELL_AURA_REMOVED"
   and targetAuraDefinition
   then
-    A.ClearTrackedAuraTimers(context.spellName, context.spellID, context.destGUID)
-
     if Announcer_Options.announceMode == "ending" then
       return A.FormatEndedMessage(
         context.sourceName,
@@ -207,21 +180,6 @@ function A.HandleDestCombatEvent(context, playerGUID)
   or context.combatEvent == "SPELL_AURA_REFRESH")
   and selfAuraDefinition
   then
-    if context.combatEvent == "SPELL_AURA_REFRESH" then
-      A.ClearTrackedAuraTimers(context.spellName, context.spellID, context.destGUID)
-    end
-
-    if Announcer_Options.announceMode == "countdown" then
-      A.ScheduleTrackedAuraCountdown(
-        context.sourceName,
-        context.spellName,
-        context.spellID,
-        nil,
-        context.destGUID,
-        selfAuraDefinition.duration
-      )
-    end
-
     return A.FormatCastMessage(
       context.sourceName,
       context.spellID,
@@ -234,8 +192,6 @@ function A.HandleDestCombatEvent(context, playerGUID)
   if context.combatEvent == "SPELL_AURA_REMOVED"
   and selfAuraDefinition
   then
-    A.ClearTrackedAuraTimers(context.spellName, context.spellID, context.destGUID)
-
     if Announcer_Options.announceMode == "ending" then
       return A.FormatEndedMessage(
         context.sourceName,

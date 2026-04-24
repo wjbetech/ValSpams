@@ -2,7 +2,9 @@ local A = Announcer
 
 function Announcer_OnLoad(self)
 	SLASH_ANNOUNCER1 = "/announcer"
-	SlashCmdList["ANNOUNCER"] = Announcer_SlashCommand
+	SlashCmdList["ANNOUNCER"] = function(msg)
+		Announcer_SlashCommand(msg)
+	end
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
@@ -11,7 +13,6 @@ function Announcer_OnLoad(self)
 	A.CreateOptionsPanel()
 
 	A.Message(A.optionLabels.announce..": "..A.ColorText(Announcer_Options.announce))
-	A.Message(A.optionLabels.taunt..": "..A.ColorText(Announcer_Options.taunt))
 end
 
 function Announcer_OnEvent(self, event, ...)
@@ -30,8 +31,6 @@ function Announcer_SlashCommand(msg)
 		A.ToggleOption("announce")
 	elseif msg == "debug" then
 		A.ToggleOption("debug")
-	elseif msg == "taunt" then
-		A.ToggleOption("taunt")
 	elseif msg == "options" or msg == "config" then
 		A.OpenOptionsPanel()
 		A.Message(A.L.openedOptions)

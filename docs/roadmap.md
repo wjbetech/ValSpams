@@ -24,36 +24,39 @@ The core principles follow this:
 - [x] Remove old registry bucket assumptions
 - [x] Add lookup helpers for new behavior model
 - [x] Verify class spell definitions still register correctly
-- [ ] Plan saved-variable migration impact
+- [x] Plan saved-variable migration impact
+  - [x] whether existing trackedSpells keys still match current spell keys
+  - [x] whether taunt still has the same meaning under the new behavior model
+  - [x] whether obsolete saved fields should be normalized or removed in EnsureOptions()
 
 ## Phase 2: Event Pipeline
 
-- [ ] Refactor combat-log handling in core/Events.lua
-- [ ] Route events by behavior instead of old modality buckets
-- [ ] Separate self aura, target aura, cast success, and outcome handling
-- [ ] Add clean success path for tracked spells
-- [ ] Add clean failure path for miss, resist, and immune
+- [x] Refactor combat-log handling in core/Events.lua
+- [x] Route events by behavior instead of old modality buckets
+- [x] Separate self aura, target aura, cast success, and outcome handling
+- [x] Add clean success path for tracked spells
+- [x] Add clean failure path for miss, resist, and immune
 - [ ] Prevent duplicate messages on refresh or reapply
-- [ ] Handle nil target data safely
+- [x] Handle nil target data safely
 
 ## Phase 3: Message Formatting
 
-- [ ] Rebuild success message formatting
-- [ ] Rebuild fail message formatting
+- [x] Rebuild success message formatting
+- [x] Rebuild fail message formatting
 - [ ] Add break message formatting
-- [ ] Add expiry message formatting
-- [ ] Add target name support
+- [x] Add expiry message formatting
+- [x] Add target name support
 - [ ] Add raid icon support
 - [ ] Clean up noisy or awkward wording
 - [ ] Keep category wording consistent
 
 ## Phase 4: Localization
 
-- [ ] Localize miss messaging
-- [ ] Localize resist messaging
-- [ ] Localize immune messaging
+- [x] Localize miss messaging
+- [x] Localize resist messaging
+- [x] Localize immune messaging
 - [ ] Localize break messaging
-- [ ] Localize expiry messaging
+- [x] Localize expiry messaging
 - [ ] Add labels for new categories
 - [ ] Add labels for new options
 - [ ] Remove hard-coded English from logic paths
@@ -62,11 +65,9 @@ The core principles follow this:
 
 - [ ] Mark defensive spells in class data
 - [ ] Announce successful defensive use
-- [ ] Add final 3-second countdown
 - [ ] Announce target for externals
 - [ ] Whisper target for externals
 - [ ] Prevent self-whisper
-- [ ] Verify countdown only runs when duration makes sense
 - [ ] Test one full defensive flow end-to-end
 
 ## Phase 6: Offensives
@@ -124,7 +125,6 @@ The core principles follow this:
 - [ ] Review existing trinket path in core/Trinkets.lua
 - [ ] Keep trinkets usage-only
 - [ ] Add menu warning for possible spam
-- [ ] Ensure no countdowns fire for trinkets
 - [ ] Ensure no expiry messages fire for trinkets
 - [ ] Verify GetItemSpell handling remains safe
 - [ ] Test both trinket slots

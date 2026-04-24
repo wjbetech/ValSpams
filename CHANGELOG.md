@@ -5,9 +5,9 @@
 - Added a Blizzard options panel for toggling announcement, taunt, and debug settings.
 - Updated `/announcer` to open the options panel by default.
 - Fixed the saved debug setting to consistently use `Announcer_Options.debug`.
-- Added Hammer of Justice to tracked debuff announcements and count down the final 3 seconds before it ends.
+- Added Hammer of Justice to tracked debuff announcements.
 - Switched tracked ability matching to localized spell registration from spell IDs so non-English clients are supported.
-- Added a localized announce-mode dropdown for cast-only, cast-plus-countdown, or cast-plus-ending behavior.
+- Added a localized announce-mode dropdown for cast-only or cast-plus-ending behavior.
 - Updated tracked announcements to include the caster name and localized spell links.
 - Added an option to hide target names in tracked announcements.
 - Added tracked durations to the initial cast message.

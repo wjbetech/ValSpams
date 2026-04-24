@@ -8,14 +8,12 @@ A.optionDefaults = {
 	trackTrinkets = false,
 	showPlayerName = true,
 	showTarget = true,
-	taunt = false,
 	channelMode = "priority",
 	announceMode = "ending"
 }
 
 A.optionOrder = {
 	"announce",
-	"taunt",
 	"trackTrinkets",
 	"showPlayerName",
 	"showTarget",
@@ -40,11 +38,24 @@ function A.EnsureOptions()
 	end
 
 	Announcer_Options.trackedSpells = A.SetPref(Announcer_Options.trackedSpells, {})
-	for _, spellDefinition in ipairs(A.GetTrackedSpellDefinitions()) do
+	local trackedSpellDefinitions = A.GetTrackedSpellDefinitions()
+	local validTrackedSpellKeys = {}
+	for _, spellDefinition in ipairs(trackedSpellDefinitions) do
+		validTrackedSpellKeys[spellDefinition.key] = true
+	end
+
+	for spellKey in pairs(Announcer_Options.trackedSpells) do
+		if not validTrackedSpellKeys[spellKey] then
+			Announcer_Options.trackedSpells[spellKey] = nil
+		end
+	end
+
+	for _, spellDefinition in ipairs(trackedSpellDefinitions) do
 		if Announcer_Options.trackedSpells[spellDefinition.key] == nil then
 			Announcer_Options.trackedSpells[spellDefinition.key] = true
 		end
 	end
+
 
 	if A.announceModeLabels[Announcer_Options.announceMode] == nil then
 		Announcer_Options.announceMode = A.optionDefaults.announceMode
@@ -58,6 +69,7 @@ function A.EnsureOptions()
 		Announcer_Options.debug = Announcer_Options.debugging
 	end
 
+	Announcer_Options.taunt = nil
 	Announcer_Options.debugging = nil
 
 	if A.RefreshOptionsPanel then

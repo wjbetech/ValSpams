@@ -23,7 +23,6 @@ function A.RefreshOptionsPanel()
 	if state.optionsPanel and state.optionsPanel.statusText then
 		state.optionsPanel.statusText:SetText(
 			A.optionLabels.announce..": "..A.ColorText(Announcer_Options.announce).."    "..
-			A.optionLabels.taunt..": "..A.ColorText(Announcer_Options.taunt).."    "..
 			A.optionLabels.trackTrinkets..": "..A.ColorText(Announcer_Options.trackTrinkets).."    "..
 			A.optionLabels.showPlayerName..": "..A.ColorText(Announcer_Options.showPlayerName).."    "..
 			A.optionLabels.showTarget..": "..A.ColorText(Announcer_Options.showTarget).."    "..
@@ -66,7 +65,9 @@ end
 function A.CreateTrackedSpellCheckbox(parent, spellDefinition, anchor)
 	local checkbox = CreateFrame("CheckButton", "$parent"..spellDefinition.key, parent, "InterfaceOptionsCheckButtonTemplate")
 	checkbox:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -10)
-	checkbox.Text:SetText(A.GetSpellText(spellDefinition.spellID, spellDefinition.spellName)..A.GetDurationSuffix(spellDefinition.duration))
+	local durationText = A.GetDurationText(spellDefinition.duration)
+	local suffix = durationText ~= "" and " "..durationText or ""
+	checkbox.Text:SetText(A.GetSpellText(spellDefinition.spellID, spellDefinition.spellName)..suffix)
 	checkbox:SetScript("OnClick", function(self)
 		A.SetTrackedSpellEnabled(spellDefinition.key, self:GetChecked())
 	end)

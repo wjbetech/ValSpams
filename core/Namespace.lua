@@ -8,7 +8,6 @@ A.state = A.state or {}
 A.state.optionCheckboxes = A.state.optionCheckboxes or {}
 A.state.trackedSpellCheckboxes = A.state.trackedSpellCheckboxes or {}
 A.state.classPanels = A.state.classPanels or {}
-A.state.trackedAuraTimers = A.state.trackedAuraTimers or {}
 A.state.channelModeDropdown = A.state.channelModeDropdown or nil
 
 A.classOrder = {
@@ -25,7 +24,6 @@ A.classOrder = {
 
 A.announceModeOrder = {
 	"cast_only",
-	"countdown",
 	"ending"
 }
 
