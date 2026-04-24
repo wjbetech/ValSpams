@@ -11,7 +11,7 @@ function A.GetCombatLogContext()
   destName, destFlags,
   destRaidFlags, extraArg1,
   extraArg2, extraArg3,
-  extraArg4
+  extraArg4, extraArg5, extraArg6
   = CombatLogGetCurrentEventInfo()
 
   -- direct map of combat log event info from above
@@ -29,8 +29,9 @@ function A.GetCombatLogContext()
     destRaidFlags = destRaidFlags,
     spellID = extraArg1,
     spellName = extraArg2,
-    extraArg3 = extraArg3,
-    extraArg4 = extraArg4
+    eventArg1 = extraArg4,
+    eventArg2 = extraArg5,
+    eventArg3 = extraArg6
   }
 end
 
@@ -39,16 +40,21 @@ function A.HandleSourceCombatEvent(context, playerGUID)
     return nil
   end
 
-  local castSuccessDefinition = A.GetBehaviorDefinition("cast_success", context.extraArg2)
-  local targetAuraDefinition = A.GetBehaviorDefinition("target_aura", context.extraArg2)
+  local castSuccessDefinition = A.GetBehaviorDefinition("cast_success", context.spellName)
+  local targetAuraDefinition = A.GetBehaviorDefinition("target_aura", context.spellName)
 
   -- handle spell misses (maybe immunes and resists here too)
   if context.combatEvent == "SPELL_MISSED"
   then
+
     local missedDefinition = castSuccessDefinition
     or targetAuraDefinition
 
-    local missType = context.extraArg4 -- miss type (miss, dodge, resist, immune, etc)
+    if not missedDefinition then
+      return nil
+    end
+
+    local missType = context.eventArg1 -- miss type (miss, dodge, resist, immune, etc)
 
     if missType == "MISS"
     and not missedDefinition.flags.announceOnMiss
@@ -84,10 +90,10 @@ function A.HandleSourceCombatEvent(context, playerGUID)
     then
       return A.FormatMissMessage(
         context.sourceName,
-        context.extraArg1,
-        context.extraArg2,
+        context.spellID,
+        context.spellName,
         context.destName,
-        context.extraArg4 -- miss type (miss, dodge, resist, immune, etc)
+        missType -- miss type (miss, dodge, resist, immune, etc)
       )
     end
   end
@@ -95,13 +101,22 @@ function A.HandleSourceCombatEvent(context, playerGUID)
   if context.combatEvent == "SPELL_INTERRUPT"
   and castSuccessDefinition
   then
+    local interruptedSpellID = context.eventArg1
+    local interruptedSpellName = context.eventArg2
+    local interruptedSpellSchool = context.eventArg3
+
+    if castSuccessDefinition.category ~= "interrupt" and
+    not castSuccessDefinition.flags.interruptOnly
+    then
+      return nil
+    end
+
     return A.FormatCastMessage(
       context.sourceName,
-      context.extraArg1,
-      context.extraArg2,
+      context.spellID,
+      context.spellName,
       context.destName,
-      nil,
-      true -- isInterrupt
+      nil
     )
   end
 
@@ -111,6 +126,10 @@ function A.HandleSourceCombatEvent(context, playerGUID)
   and castSuccessDefinition
   then
 
+    local interruptedSpellID = context.eventArg1
+    local interruptedSpellName = context.eventArg2
+    local interruptedSpellSchool = context.eventArg3
+
     -- don't announce interrupts on non-interruptables
     if castSuccessDefinition.flags.interruptOnly
     then
@@ -119,8 +138,8 @@ function A.HandleSourceCombatEvent(context, playerGUID)
 
     return A.FormatCastMessage(
       context.sourceName,
-      context.extraArg1,
-      context.extraArg2,
+      context.spellID,
+      context.spellName,
       context.destName,
       castSuccessDefinition.duration
     )
@@ -135,14 +154,14 @@ function A.HandleSourceCombatEvent(context, playerGUID)
     if context.combatEvent == "SPELL_AURA_REFRESH"
     and targetAuraDefinition
     then
-      A.ClearTrackedAuraTimers(context.extraArg2, context.extraArg1, context.destGUID)
+      A.ClearTrackedAuraTimers(context.spellName, context.spellID, context.destGUID)
     end
 
     if Announcer_Options.announceMode == "countdown" then
       A.ScheduleTrackedAuraCountdown(
         context.sourceName,
-        context.extraArg2,
-        context.extraArg1,
+        context.spellName,
+        context.spellID,
         context.destName,
         context.destGUID,
         targetAuraDefinition.duration
@@ -151,8 +170,8 @@ function A.HandleSourceCombatEvent(context, playerGUID)
 
     return A.FormatCastMessage(
       context.sourceName,
-      context.extraArg1,
-      context.extraArg2,
+      context.spellID,
+      context.spellName,
       context.destName,
       targetAuraDefinition.duration
     )
@@ -162,13 +181,13 @@ function A.HandleSourceCombatEvent(context, playerGUID)
   if context.combatEvent == "SPELL_AURA_REMOVED"
   and targetAuraDefinition
   then
-    A.ClearTrackedAuraTimers(context.extraArg2, context.extraArg1, context.destGUID)
+    A.ClearTrackedAuraTimers(context.spellName, context.spellID, context.destGUID)
 
     if Announcer_Options.announceMode == "ending" then
       return A.FormatEndedMessage(
         context.sourceName,
-        context.extraArg1,
-        context.extraArg2,
+        context.spellID,
+        context.spellName,
         context.destName
       )
     end
@@ -182,21 +201,21 @@ function A.HandleDestCombatEvent(context, playerGUID)
     return nil
   end
 
-  local selfAuraDefinition = A.GetBehaviorDefinition("self_aura", context.extraArg2)
+  local selfAuraDefinition = A.GetBehaviorDefinition("self_aura", context.spellName)
 
   if (context.combatEvent == "SPELL_AURA_APPLIED"
   or context.combatEvent == "SPELL_AURA_REFRESH")
   and selfAuraDefinition
   then
     if context.combatEvent == "SPELL_AURA_REFRESH" then
-      A.ClearTrackedAuraTimers(context.extraArg2, context.extraArg1, context.destGUID)
+      A.ClearTrackedAuraTimers(context.spellName, context.spellID, context.destGUID)
     end
 
     if Announcer_Options.announceMode == "countdown" then
       A.ScheduleTrackedAuraCountdown(
         context.sourceName,
-        context.extraArg2,
-        context.extraArg1,
+        context.spellName,
+        context.spellID,
         nil,
         context.destGUID,
         selfAuraDefinition.duration
@@ -205,8 +224,8 @@ function A.HandleDestCombatEvent(context, playerGUID)
 
     return A.FormatCastMessage(
       context.sourceName,
-      context.extraArg1,
-      context.extraArg2,
+      context.spellID,
+      context.spellName,
       nil,
       selfAuraDefinition.duration
     )
@@ -215,13 +234,13 @@ function A.HandleDestCombatEvent(context, playerGUID)
   if context.combatEvent == "SPELL_AURA_REMOVED"
   and selfAuraDefinition
   then
-    A.ClearTrackedAuraTimers(context.extraArg2, context.extraArg1, context.destGUID)
+    A.ClearTrackedAuraTimers(context.spellName, context.spellID, context.destGUID)
 
     if Announcer_Options.announceMode == "ending" then
       return A.FormatEndedMessage(
         context.sourceName,
-        context.extraArg1,
-        context.extraArg2,
+        context.spellID,
+        context.spellName,
         nil
       )
     end
