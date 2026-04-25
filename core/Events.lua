@@ -1,5 +1,6 @@
 ---@diagnostic disable: undefined-global, undefined-field
 local A = ValSpams
+local ValSpams_Options = _G.ValSpams_Options
 
 local RAID_ICON_FLAGS = {
   { mask = 0x00100000, text = "{rt1}" },
@@ -177,6 +178,27 @@ function A.MarkRecentBreak(context)
   A.state.recentBreaks[key] = context.timestamp or 0
 end
 
+function A.GetCrowdControlKey(context)
+  local spellToken = context.spellID or context.spellName or ""
+  return (context.destGUID or "")..":"..tostring(spellToken)
+end
+
+function A.SetActiveCrowdControlOwner(context, ownerGUID)
+  if not ownerGUID or ownerGUID == "" then
+    return
+  end
+
+  A.state.activeCrowdControlOwners[A.GetCrowdControlKey(context)] = ownerGUID
+end
+
+function A.GetActiveCrowdControlOwner(context)
+  return A.state.activeCrowdControlOwners[A.GetCrowdControlKey(context)]
+end
+
+function A.ClearActiveCrowdControlOwner(context)
+  A.state.activeCrowdControlOwners[A.GetCrowdControlKey(context)] = nil
+end
+
 function A.WasRecentlyBroken(context)
   local key = (context.destGUID or "")..":"..(context.spellName or "")
   local brokenAt = A.state.recentBreaks[key]
@@ -187,6 +209,23 @@ function A.WasRecentlyBroken(context)
   local eventTime = context.timestamp or 0
   A.state.recentBreaks[key] = nil
   return (eventTime - brokenAt) <= 0.5
+end
+
+function A.IsPlayerGUID(unitGUID)
+  return type(unitGUID) == "string" and string.find(unitGUID, "^Player%-") ~= nil
+end
+
+function A.ShouldAnnounceCrowdControlOutcome(context, playerGUID, allowExternalCrowdControl)
+  local ownerGUID = A.GetActiveCrowdControlOwner(context)
+  if ownerGUID then
+    return ownerGUID == playerGUID or allowExternalCrowdControl
+  end
+
+  if context.sourceGUID == playerGUID then
+    return true
+  end
+
+  return allowExternalCrowdControl and context.sourceGUID ~= nil
 end
 
 function A.ShouldHandleTrackedCrowdControl(context)
@@ -273,6 +312,10 @@ function A.HandleSourceCombatEvent(context, playerGUID, allowExternalCrowdContro
   end
 
   if context.combatEvent == "SPELL_DISPEL" and castSuccessDefinition and castSuccessDefinition.flags.dispelOnly then
+    if A.IsPlayerGUID(context.destGUID) then
+      return nil
+    end
+
     return A.FormatDispelMessage(
       context.sourceName,
       context.spellID,
@@ -334,7 +377,6 @@ function A.HandleSourceCombatEvent(context, playerGUID, allowExternalCrowdContro
   end
 
   if context.combatEvent == "SPELL_CAST_SUCCESS"
-  and ValSpams_Options.trackTrinkets
   and A.IsCategoryEnabled("trinket")
   and trinketDefinition
   then
@@ -351,6 +393,10 @@ function A.HandleSourceCombatEvent(context, playerGUID, allowExternalCrowdContro
     local announceTarget = A.GetContextAnnounceTarget(targetAuraDefinition, context, sourceIsPlayer)
     local castDuration = targetAuraDefinition.duration
     local isCrowdControl = targetAuraDefinition.category == "crowd_control"
+
+    if isCrowdControl and (sourceIsPlayer or allowExternalCrowdControl) then
+      A.SetActiveCrowdControlOwner(context, context.sourceGUID)
+    end
 
     local eventMessage = A.FormatCastMessage(
       context.sourceName,
@@ -385,7 +431,12 @@ function A.HandleSourceCombatEvent(context, playerGUID, allowExternalCrowdContro
       return nil
     end
 
+    if not A.ShouldAnnounceCrowdControlOutcome(context, playerGUID, allowExternalCrowdControl) then
+      return nil
+    end
+
     A.MarkRecentBreak(context)
+    A.ClearActiveCrowdControlOwner(context)
     return A.FormatBreakMessage(
       context.sourceName,
       context.spellID,
@@ -395,8 +446,17 @@ function A.HandleSourceCombatEvent(context, playerGUID, allowExternalCrowdContro
   end
 
   if context.combatEvent == "SPELL_AURA_REMOVED" and targetAuraDefinition then
-    if targetAuraDefinition.category == "crowd_control" and A.WasRecentlyBroken(context) then
-      return nil
+    if targetAuraDefinition.category == "crowd_control" then
+      local shouldAnnounce = A.ShouldAnnounceCrowdControlOutcome(context, playerGUID, allowExternalCrowdControl)
+      A.ClearActiveCrowdControlOwner(context)
+
+      if not shouldAnnounce then
+        return nil
+      end
+
+      if A.WasRecentlyBroken(context) then
+        return nil
+      end
     end
 
     if targetAuraDefinition.category == "taunt" then

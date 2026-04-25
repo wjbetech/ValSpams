@@ -365,7 +365,6 @@ function A.CreateOptionsPanel()
 
 	local generalHeader = A.CreateSectionHeader(content, A.L.announce, subtitle, -18)
 	local generalAnchor = A.CreateCheckbox(content, "announce", generalHeader)
-	generalAnchor = A.CreateCheckbox(content, "trackTrinkets", generalAnchor)
 	generalAnchor = A.CreateCheckbox(content, "debug", generalAnchor)
 
 	local categoryHeader = A.CreateSectionHeader(content, A.L.categoryToggles, generalAnchor, -20)

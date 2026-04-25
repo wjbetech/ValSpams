@@ -9,7 +9,6 @@ local A = _G.ValSpams
 A.optionDefaults = {
 	announce = true,
 	debug = false,
-	trackTrinkets = false,
 	ccScope = "mine",
 	channelMode = "priority",
 	announceMode = "ending"
@@ -17,7 +16,6 @@ A.optionDefaults = {
 
 A.optionOrder = {
 	"announce",
-	"trackTrinkets",
 	"debug"
 }
 
@@ -39,6 +37,7 @@ end
 
 function A.EnsureCategoryToggles()
 	ValSpams_Options.categoryToggles = A.SetPref(ValSpams_Options.categoryToggles, {})
+	local legacyTrackTrinkets = ValSpams_Options.trackTrinkets
 
 	local validCategories = {}
 	for _, category in ipairs(A.categoryOrder) do
@@ -46,6 +45,11 @@ function A.EnsureCategoryToggles()
 		local defaultEnabled = true
 		if category == "interrupt" and A.ShouldDisableInterruptCategory() then
 			defaultEnabled = false
+		elseif category == "trinket" then
+			defaultEnabled = legacyTrackTrinkets
+			if defaultEnabled == nil then
+				defaultEnabled = false
+			end
 		end
 		if ValSpams_Options.categoryToggles[category] == nil then
 			ValSpams_Options.categoryToggles[category] = defaultEnabled
@@ -108,6 +112,7 @@ function A.EnsureOptions()
 	ValSpams_Options.showTarget = nil
 	ValSpams_Options.showRaidIcons = nil
 	ValSpams_Options.externalWhispers = nil
+	ValSpams_Options.trackTrinkets = nil
 
 	if A.RefreshOptionsPanel then
 		A.RefreshOptionsPanel()

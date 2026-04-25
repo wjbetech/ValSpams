@@ -16,6 +16,7 @@ A.state.channelModeDropdown = A.state.channelModeDropdown or nil
 A.state.announceModeDropdown = A.state.announceModeDropdown or nil
 A.state.ccScopeDropdown = A.state.ccScopeDropdown or nil
 A.state.recentBreaks = A.state.recentBreaks or {}
+A.state.activeCrowdControlOwners = A.state.activeCrowdControlOwners or {}
 
 A.classOrder = {
 	"WARRIOR",
