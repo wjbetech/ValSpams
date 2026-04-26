@@ -89,7 +89,8 @@ A.localeStrings = {
 		warningTrinkets = "사용 장신구를 자주 돌리면 알림이 많아질 수 있습니다.",
 		warningInterruptElvUI = "ElvUI가 설치되어 있으면 차단 알림은 자동으로 비활성화됩니다.",
 		channelMode = "알림 채널",
-		channelModeDescription = "기본 우선순위를 사용할지 항상 외치기 또는 일반 대화를 사용할지 선택합니다.",
+		channelModeDescription = "기본 우선순위, 외치기, 일반 대화 "..
+			"중에서 선택합니다.",
 		channelPriority = "공격대 > 파티 > 외치기",
 		channelYellOnly = "외치기 전용",
 		channelSayOnly = "일반 대화 전용",

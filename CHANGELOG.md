@@ -1,5 +1,11 @@
 # Changelog
 
+## Beta Release 1.0.2-beta.4 (2026.04.26)
+
+- Beta release
+  - Use combat-log affiliation flags as an additional ownership check so player-cast Hammer of Justice, taunts, tank warnings, and trinkets are not dropped when GUID or name data is incomplete.
+  - Clean up the Korean channel-mode description for the new `Say only` option.
+
 ## Beta Release 1.0.2-beta.3 (2026.04.26)
 
 - Beta release

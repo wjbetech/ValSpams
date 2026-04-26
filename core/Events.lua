@@ -24,6 +24,17 @@ local RAID_ICON_INDEX_TEXT = {
   [8] = "{rt8}",
 }
 
+local AFFILIATION_MINE_MASK = _G.COMBATLOG_OBJECT_AFFILIATION_MINE
+
+function A.HasCombatLogFlag(flags, mask)
+  if not flags or not mask or mask <= 0 then
+    return false
+  end
+
+  local flagBand = flags % (mask * 2)
+  return flagBand >= mask
+end
+
 function A.GetRaidIconText(raidFlags)
   if not raidFlags or raidFlags == 0 then
     return nil
@@ -243,6 +254,10 @@ end
 
 function A.IsPlayerSource(context, playerGUID, playerName)
   if context.sourceGUID and playerGUID and context.sourceGUID == playerGUID then
+    return true
+  end
+
+  if A.HasCombatLogFlag(context.sourceFlags, AFFILIATION_MINE_MASK) then
     return true
   end
 
