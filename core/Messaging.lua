@@ -1,5 +1,6 @@
 ---@diagnostic disable: undefined-global
 local A = ValSpams
+local ValSpams_Options = _G.ValSpams_Options
 
 function A.ColorText(value)
 	if value then
@@ -19,6 +20,11 @@ end
 
 function A.BroadcastMessage(msg)
 	if msg == nil or msg == "" or not ValSpams_Options.announce then
+		return
+	end
+
+	if ValSpams_Options.channelMode == "say_only" then
+		SendChatMessage(msg, "SAY")
 		return
 	end
 

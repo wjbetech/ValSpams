@@ -53,5 +53,6 @@ A.ccScopeOrder = {
 
 A.channelModeOrder = {
 	"priority",
-	"yell_only"
+	"yell_only",
+	"say_only"
 }

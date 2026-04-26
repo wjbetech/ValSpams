@@ -24,9 +24,10 @@ A.localeStrings = {
 		warningTrinkets = "Trinket usage can be noisy if you rotate on-use items often.",
 		warningInterruptElvUI = "Interrupt announcements are automatically disabled while ElvUI is installed.",
 		channelMode = "Announcement Channel",
-		channelModeDescription = "Choose whether announcements follow the default group priority or always use yell.",
+		channelModeDescription = "Choose whether announcements follow the default group priority or always use yell or say.",
 		channelPriority = "Raid > Party > Yell",
 		channelYellOnly = "Yell only",
+		channelSayOnly = "Say only",
 		announceMode = "Tracked Aura Announce Mode",
 		announceModeDescription = "Choose how tracked aura announcements behave.",
 		modeCastOnly = "Cast only",
@@ -88,9 +89,10 @@ A.localeStrings = {
 		warningTrinkets = "사용 장신구를 자주 돌리면 알림이 많아질 수 있습니다.",
 		warningInterruptElvUI = "ElvUI가 설치되어 있으면 차단 알림은 자동으로 비활성화됩니다.",
 		channelMode = "알림 채널",
-		channelModeDescription = "기본 우선순위를 사용할지 항상 외치기를 사용할지 선택합니다.",
+		channelModeDescription = "기본 우선순위를 사용할지 항상 외치기 또는 일반 대화를 사용할지 선택합니다.",
 		channelPriority = "공격대 > 파티 > 외치기",
 		channelYellOnly = "외치기 전용",
+		channelSayOnly = "일반 대화 전용",
 		announceMode = "추적 효과 알림 방식",
 		announceModeDescription = "추적 중인 효과의 알림 방식을 선택합니다.",
 		modeCastOnly = "시전만 알림",
@@ -154,7 +156,8 @@ A.announceModeLabels = {
 
 A.channelModeLabels = {
 	priority = A.L.channelPriority,
-	yell_only = A.L.channelYellOnly
+	yell_only = A.L.channelYellOnly,
+	say_only = A.L.channelSayOnly
 }
 
 A.ccScopeLabels = {

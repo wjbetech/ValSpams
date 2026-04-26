@@ -1,5 +1,18 @@
 # Changelog
 
+## Beta Release 1.0.2-beta.2 (2026.04.26)
+
+- Beta release
+  - Fix Hammer of Justice and taunt announcements for tracked target-aura spells.
+  - Add a `Say only` announcement channel mode.
+  - Tighten CC break ownership so `My CC only` does not announce other players' CC breaks.
+
+## Beta Release 1.0.2-beta.1 (2026.04.25)
+
+- Beta release
+  - Fixing the janky trinket interactions and double menu items
+  - Removed announcing dispells for now, just too spammy
+
 ## Release 1.0.1 (2026.04.25)
 
 - Initial release of ValSpams, update to the classic WakeSpams addon.

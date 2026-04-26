@@ -183,6 +183,32 @@ function A.GetCrowdControlKey(context)
   return (context.destGUID or "")..":"..tostring(spellToken)
 end
 
+function A.GetAnnouncedTargetAuraKey(context)
+  local spellToken = context.spellID or context.spellName or ""
+  local destToken = context.destGUID or context.destName or ""
+  return tostring(spellToken)..":"..tostring(destToken)
+end
+
+function A.MarkRecentTargetAuraAnnouncement(context)
+  A.state.recentBreaks["announce:"..A.GetAnnouncedTargetAuraKey(context)] = context.timestamp or 0
+end
+
+function A.WasRecentlyAnnouncedTargetAura(context)
+  local key = "announce:"..A.GetAnnouncedTargetAuraKey(context)
+  local announcedAt = A.state.recentBreaks[key]
+  if not announcedAt then
+    return false
+  end
+
+  local eventTime = context.timestamp or 0
+  if (eventTime - announcedAt) <= 0.5 then
+    return true
+  end
+
+  A.state.recentBreaks[key] = nil
+  return false
+end
+
 function A.SetActiveCrowdControlOwner(context, ownerGUID)
   if not ownerGUID or ownerGUID == "" then
     return
@@ -219,6 +245,10 @@ function A.ShouldAnnounceCrowdControlOutcome(context, playerGUID, allowExternalC
   local ownerGUID = A.GetActiveCrowdControlOwner(context)
   if ownerGUID then
     return ownerGUID == playerGUID or allowExternalCrowdControl
+  end
+
+  if not allowExternalCrowdControl then
+    return false
   end
 
   if context.sourceGUID == playerGUID then
@@ -376,6 +406,27 @@ function A.HandleSourceCombatEvent(context, playerGUID, allowExternalCrowdContro
     return eventMessage
   end
 
+  if context.combatEvent == "SPELL_CAST_SUCCESS" and sourceIsPlayer and targetAuraDefinition then
+    if targetAuraDefinition.category == "crowd_control" then
+      A.SetActiveCrowdControlOwner(context, playerGUID)
+    end
+
+    A.MarkRecentTargetAuraAnnouncement(context)
+
+    return A.FormatCastMessage(
+      context.sourceName,
+      context.spellID,
+      context.spellName,
+      A.GetContextAnnounceTarget(targetAuraDefinition, context, true),
+      targetAuraDefinition.duration,
+      false,
+      targetAuraDefinition.category == "crowd_control",
+      targetAuraDefinition.category == "crowd_control"
+        and A.GetContextAnnounceTarget(targetAuraDefinition, context, true)
+        or nil
+    )
+  end
+
   if context.combatEvent == "SPELL_CAST_SUCCESS"
   and A.IsCategoryEnabled("trinket")
   and trinketDefinition
@@ -390,6 +441,17 @@ function A.HandleSourceCombatEvent(context, playerGUID, allowExternalCrowdContro
   end
 
   if context.combatEvent == "SPELL_AURA_APPLIED" and targetAuraDefinition then
+    if sourceIsPlayer == false and not allowExternalCrowdControl then
+      local sourceName = context.sourceName
+      if not sourceName or sourceName ~= UnitName("player") then
+        return nil
+      end
+    end
+
+    if A.WasRecentlyAnnouncedTargetAura(context) then
+      return nil
+    end
+
     local announceTarget = A.GetContextAnnounceTarget(targetAuraDefinition, context, sourceIsPlayer)
     local castDuration = targetAuraDefinition.duration
     local isCrowdControl = targetAuraDefinition.category == "crowd_control"
