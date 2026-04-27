@@ -4,7 +4,7 @@ local ValSpams_Options = _G.ValSpams_Options
 local state = A.state
 local getSpellTexture = _G.GetSpellTexture
 local getAddOnMetadata = _G.GetAddOnMetadata
-local LOCAL_ADDON_VERSION = "1.0.2-beta.27"
+local LOCAL_ADDON_VERSION = "1.0.2"
 
 local PANEL_CONTENT_WIDTH = 520
 local TEXT_WIDTH = 440

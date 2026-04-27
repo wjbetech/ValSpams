@@ -1,6 +1,6 @@
 ## Interface: 20501
 ## Title: ValSpams
-## Version: 1.0.2-beta.27
+## Version: 1.0.2
 ## Notes: Lightweight TBC Anniversary combat announcement addon.
 ## SavedVariablesPerCharacter: ValSpams_Options
 core\Namespace.lua

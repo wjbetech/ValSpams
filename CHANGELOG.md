@@ -1,8 +1,8 @@
 # Changelog
 
-## Beta Release 1.0.2-beta.27 (2026.04.27)
+## Release 1.0.2 (2026.04.28)
 
-- Beta release
+- Stable release
   - Add registry support for multi-rank spell definitions via `spellIDs` and `durationBySpellID`.
   - Expand class spell coverage and rank mappings across the tracked class files.
   - Remove the debug toggle and channel-selection toggle from the addon options and slash commands.
