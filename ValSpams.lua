@@ -11,8 +11,6 @@ local function HandleSlashCommand(msg)
 
 	if msg == "announce" then
 		A.ToggleOption("announce")
-	elseif msg == "debug" then
-		A.ToggleOption("debug")
 	elseif msg == "options" or msg == "config" then
 		A.OpenOptionsPanel()
 		A.Message(A.L.openedOptions)

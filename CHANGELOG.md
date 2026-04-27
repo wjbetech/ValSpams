@@ -1,5 +1,14 @@
 # Changelog
 
+## Beta Release 1.0.2-beta.27 (2026.04.27)
+
+- Beta release
+  - Add registry support for multi-rank spell definitions via `spellIDs` and `durationBySpellID`.
+  - Expand class spell coverage and rank mappings across the tracked class files.
+  - Remove the debug toggle and channel-selection toggle from the addon options and slash commands.
+  - Show the addon version in the in-game options UI.
+  - Improve spacing in class spell lists and update the Korean crowd-control label to `매즈`.
+
 ## Beta Release 1.0.2-beta.4 (2026.04.26)
 
 - Beta release

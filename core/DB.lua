@@ -8,15 +8,12 @@ local A = _G.ValSpams
 
 A.optionDefaults = {
 	announce = true,
-	debug = false,
 	ccScope = "mine",
-	channelMode = "priority",
 	announceMode = "ending"
 }
 
 A.optionOrder = {
-	"announce",
-	"debug"
+	"announce"
 }
 
 function A.ShouldDisableInterruptCategory()
@@ -94,19 +91,13 @@ function A.EnsureOptions()
 		ValSpams_Options.announceMode = A.optionDefaults.announceMode
 	end
 
-	if A.channelModeLabels[ValSpams_Options.channelMode] == nil then
-		ValSpams_Options.channelMode = A.optionDefaults.channelMode
-	end
-
 	if A.ccScopeLabels[ValSpams_Options.ccScope] == nil then
 		ValSpams_Options.ccScope = A.optionDefaults.ccScope
 	end
 
-	if ValSpams_Options.debugging ~= nil and ValSpams_Options.debug == nil then
-		ValSpams_Options.debug = ValSpams_Options.debugging
-	end
-
 	ValSpams_Options.taunt = nil
+	ValSpams_Options.channelMode = nil
+	ValSpams_Options.debug = nil
 	ValSpams_Options.debugging = nil
 	ValSpams_Options.showPlayerName = nil
 	ValSpams_Options.showTarget = nil
@@ -152,22 +143,6 @@ function A.SetAnnounceMode(mode)
 
 	if A.Message then
 		A.Message(A.L.announceMode..": "..A.announceModeLabels[mode])
-	end
-end
-
-function A.SetChannelMode(mode)
-	if A.channelModeLabels[mode] == nil then
-		return
-	end
-
-	ValSpams_Options.channelMode = mode
-
-	if A.RefreshOptionsPanel then
-		A.RefreshOptionsPanel()
-	end
-
-	if A.Message then
-		A.Message(A.L.channelMode..": "..A.channelModeLabels[mode])
 	end
 end
 

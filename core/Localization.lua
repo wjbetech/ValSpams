@@ -9,8 +9,6 @@ A.localeStrings = {
 		classesDescription = "Choose which class spell lists are available under ValSpams.",
 		classSpellsDescription = "Enable or disable tracked spells for this class.",
 		noTrackedSpells = "No tracked spells are configured for this class yet.",
-		debug = "Debug",
-		debugDescription = "Enable extra local debug output while testing.",
 		trackTrinkets = "Track trinkets",
 		trackTrinketsDescription = "Announce on-use trinket activations from your equipped trinket slots.",
 		categoryToggles = "Category filters",
@@ -23,19 +21,14 @@ A.localeStrings = {
 		warningCrowdControl = "All tracked CC can be noisy when many players are controlling mobs.",
 		warningTrinkets = "Trinket usage can be noisy if you rotate on-use items often.",
 		warningInterruptElvUI = "Interrupt announcements are automatically disabled while ElvUI is installed.",
-		channelMode = "Announcement Channel",
-		channelModeDescription = "Choose whether announcements follow the default group priority or always use yell or say.",
-		channelPriority = "Raid > Party > Yell",
-		channelYellOnly = "Yell only",
-		channelSayOnly = "Say only",
 		announceMode = "Tracked Aura Announce Mode",
 		announceModeDescription = "Choose how tracked aura announcements behave.",
 		modeCastOnly = "Cast only",
 		modeEnding = "Cast + ending",
 		optionsSubtitle = "Configure which combat announcements this addon sends to party, raid, or local chat.",
-		helpText = "Slash commands: /vs, /valspams, /vs announce, /vs debug",
+		helpText = "Slash commands: /vs, /valspams, /vs announce",
 		openedOptions = "Opened ValSpams options.",
-		usage = "Usage: /vs, /valspams, /vs announce, /vs debug",
+		usage = "Usage: /vs, /valspams, /vs announce",
 		categoryDefensive = "Defensive",
 		categoryOffensive = "Offensive",
 		categoryTaunt = "Taunt",
@@ -74,39 +67,31 @@ A.localeStrings = {
 		classesDescription = "ValSpams 아래에서 직업별 주문 추적 목록을 설정합니다.",
 		classSpellsDescription = "이 직업에서 추적할 주문을 켜거나 끕니다.",
 		noTrackedSpells = "아직 이 직업에 설정된 추적 주문이 없습니다.",
-		debug = "디버그",
-		debugDescription = "테스트 중 추가 디버그 메시지를 표시합니다.",
 		trackTrinkets = "장신구 추적",
 		trackTrinketsDescription = "착용한 장신구 칸의 사용 효과를 알립니다.",
 		categoryToggles = "카테고리 필터",
 		categoryTogglesDescription = "개별 주문 체크보다 먼저 전체 카테고리를 켜거나 끕니다.",
-		ccScope = "군중 제어 범위",
-		ccScopeDescription = "내 CC만 볼지, 전투 중 보이는 추적 CC 전체를 볼지 선택합니다.",
+		ccScope = "매즈 범위",
+		ccScopeDescription = "내 매즈만 볼지, 전투 중 보이는 추적 매즈 전체를 볼지 선택합니다.",
 		ccScopeMine = "내 CC만",
 		ccScopeAllTracked = "추적 CC 전체",
 		warningOffensive = "공격 지원기 알림은 공격대 전투에서 많아질 수 있습니다.",
-		warningCrowdControl = "여러 명이 CC를 쓰면 전체 추적 CC 알림이 많아질 수 있습니다.",
+		warningCrowdControl = "여러 명이 매즈를 쓰면 전체 추적 매즈 알림이 많아질 수 있습니다.",
 		warningTrinkets = "사용 장신구를 자주 돌리면 알림이 많아질 수 있습니다.",
 		warningInterruptElvUI = "ElvUI가 설치되어 있으면 차단 알림은 자동으로 비활성화됩니다.",
-		channelMode = "알림 채널",
-		channelModeDescription = "기본 우선순위, 외치기, 일반 대화 "..
-			"중에서 선택합니다.",
-		channelPriority = "공격대 > 파티 > 외치기",
-		channelYellOnly = "외치기 전용",
-		channelSayOnly = "일반 대화 전용",
 		announceMode = "추적 효과 알림 방식",
 		announceModeDescription = "추적 중인 효과의 알림 방식을 선택합니다.",
 		modeCastOnly = "시전만 알림",
 		modeEnding = "시전 + 종료 알림",
 		optionsSubtitle = "이 애드온이 파티, 공격대 또는 일반 채팅에 보낼 "..
 			"전투 알림을 설정합니다.",
-		helpText = "슬래시 명령어: /vs, /valspams, /vs announce, /vs debug",
+		helpText = "슬래시 명령어: /vs, /valspams, /vs announce",
 		openedOptions = "ValSpams 설정을 열었습니다.",
-		usage = "사용법: /vs, /valspams, /vs announce, /vs debug",
+		usage = "사용법: /vs, /valspams, /vs announce",
 		categoryDefensive = "생존기",
 		categoryOffensive = "공격기",
 		categoryTaunt = "도발",
-		categoryCrowdControl = "군중 제어",
+		categoryCrowdControl = "매즈",
 		categoryTrinket = "장신구",
 		categoryInterrupt = "차단",
 		categoryImportantTankOutcome = "중요 탱킹 결과",
@@ -140,25 +125,17 @@ A.L = A.localeStrings[A.locale] or A.localeStrings.enUS
 
 A.optionLabels = {
 	announce = A.L.announce,
-	debug = A.L.debug,
 	trackTrinkets = A.L.trackTrinkets,
 }
 
 A.optionDescriptions = {
 	announce = A.L.announceDescription,
-	debug = A.L.debugDescription,
 	trackTrinkets = A.L.trackTrinketsDescription,
 }
 
 A.announceModeLabels = {
 	cast_only = A.L.modeCastOnly,
 	ending = A.L.modeEnding
-}
-
-A.channelModeLabels = {
-	priority = A.L.channelPriority,
-	yell_only = A.L.channelYellOnly,
-	say_only = A.L.channelSayOnly
 }
 
 A.ccScopeLabels = {

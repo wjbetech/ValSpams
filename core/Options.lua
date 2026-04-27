@@ -3,12 +3,24 @@ local A = _G.ValSpams
 local ValSpams_Options = _G.ValSpams_Options
 local state = A.state
 local getSpellTexture = _G.GetSpellTexture
+local getAddOnMetadata = _G.GetAddOnMetadata
+local LOCAL_ADDON_VERSION = "1.0.2-beta.27"
 
 local PANEL_CONTENT_WIDTH = 520
 local TEXT_WIDTH = 440
 local CHECKBOX_TEXT_WIDTH = 390
 local SCROLL_STEP = 48
 local SPELL_ROW_INDENT = 22
+local SPELL_ROW_PADDING = 8
+
+function A.GetAddonDisplayName()
+	local version = getAddOnMetadata and getAddOnMetadata(A.name, "Version") or nil
+	if version == nil or version == "" or version == "@project-version@" then
+		version = LOCAL_ADDON_VERSION
+	end
+
+	return A.name.." v"..version
+end
 
 function A.RefreshOptionsPanel()
 	for optionName, checkbox in pairs(state.optionCheckboxes) do
@@ -26,11 +38,6 @@ function A.RefreshOptionsPanel()
 	if state.announceModeDropdown then
 		UIDropDownMenu_SetSelectedValue(state.announceModeDropdown, ValSpams_Options.announceMode)
 		UIDropDownMenu_SetText(state.announceModeDropdown, A.announceModeLabels[ValSpams_Options.announceMode])
-	end
-
-	if state.channelModeDropdown then
-		UIDropDownMenu_SetSelectedValue(state.channelModeDropdown, ValSpams_Options.channelMode)
-		UIDropDownMenu_SetText(state.channelModeDropdown, A.channelModeLabels[ValSpams_Options.channelMode])
 	end
 
 	if state.ccScopeDropdown then
@@ -149,7 +156,7 @@ end
 
 function A.CreateTrackedSpellCheckbox(parent, spellDefinition, anchor)
 	local rowAnchor = CreateFrame("Frame", nil, parent)
-	rowAnchor:SetSize(1, 1)
+	rowAnchor:SetSize(PANEL_CONTENT_WIDTH, 1)
 	rowAnchor:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -10)
 
 	local checkbox = CreateFrame(
@@ -175,6 +182,7 @@ function A.CreateTrackedSpellCheckbox(parent, spellDefinition, anchor)
 	local durationText = A.GetDurationText(spellDefinition.duration)
 	local suffix = durationText ~= "" and " "..durationText or ""
 	checkbox.Text:SetText(A.GetSpellText(spellDefinition.spellID, spellDefinition.spellName)..suffix)
+	rowAnchor:SetHeight(math.max(20, checkbox.Text:GetStringHeight()) + SPELL_ROW_PADDING)
 	checkbox:SetScript("OnClick", function(self)
 		A.SetTrackedSpellEnabled(spellDefinition.key, self:GetChecked())
 	end)
@@ -193,21 +201,6 @@ function A.InitializeAnnounceModeDropdown(self)
 			UIDropDownMenu_SetSelectedValue(self, buttonSelf.value)
 			UIDropDownMenu_SetText(self, A.announceModeLabels[buttonSelf.value])
 			A.SetAnnounceMode(buttonSelf.value)
-		end
-		UIDropDownMenu_AddButton(info)
-	end
-end
-
-function A.InitializeChannelModeDropdown(self)
-	for _, mode in ipairs(A.channelModeOrder) do
-		local info = UIDropDownMenu_CreateInfo()
-		info.text = A.channelModeLabels[mode]
-		info.value = mode
-		info.checked = (ValSpams_Options.channelMode == mode)
-		info.func = function(buttonSelf)
-			UIDropDownMenu_SetSelectedValue(self, buttonSelf.value)
-			UIDropDownMenu_SetText(self, A.channelModeLabels[buttonSelf.value])
-			A.SetChannelMode(buttonSelf.value)
 		end
 		UIDropDownMenu_AddButton(info)
 	end
@@ -339,7 +332,7 @@ function A.CreateClassOptionsPanels(parentCategory)
 
 	local subtitle = A.CreateSectionDescription(content, A.L.classesDescription, title)
 	state.classesPanel = panel
-	state.classesCategory = A.RegisterOptionsPanel(panel, parentCategory, A.name)
+	state.classesCategory = A.RegisterOptionsPanel(panel, parentCategory, A.GetAddonDisplayName())
 
 	for _, classToken in ipairs(A.classOrder) do
 		A.CreateClassOptionsPanel(classToken, state.classesCategory)
@@ -355,17 +348,17 @@ function A.CreateOptionsPanel()
 	end
 
 	local panel, content = A.CreateScrollablePanel("ValSpamsOptionsPanel")
-	panel.name = A.name
+	local displayName = A.GetAddonDisplayName()
+	panel.name = displayName
 
 	local title = content:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	title:SetPoint("TOPLEFT", 16, -16)
-	title:SetText(A.name)
+	title:SetText(displayName)
 
 	local subtitle = A.CreateSectionDescription(content, A.L.optionsSubtitle, title)
 
 	local generalHeader = A.CreateSectionHeader(content, A.L.announce, subtitle, -18)
 	local generalAnchor = A.CreateCheckbox(content, "announce", generalHeader)
-	generalAnchor = A.CreateCheckbox(content, "debug", generalAnchor)
 
 	local categoryHeader = A.CreateSectionHeader(content, A.L.categoryToggles, generalAnchor, -20)
 	local categoryDescription = A.CreateSectionDescription(content, A.L.categoryTogglesDescription, categoryHeader)
@@ -382,16 +375,7 @@ function A.CreateOptionsPanel()
 		warningAnchor = A.CreateSectionDescription(content, A.L.warningInterruptElvUI, warningTrinkets)
 	end
 
-	local channelHeader = A.CreateSectionHeader(content, A.L.channelMode, warningAnchor, -20)
-	local channelDescription = A.CreateSectionDescription(content, A.L.channelModeDescription, channelHeader)
-	local channelDropdown = CreateFrame("Frame", "ValSpamsChannelModeDropdown", content, "UIDropDownMenuTemplate")
-	channelDropdown:SetPoint("TOPLEFT", channelDescription, "BOTTOMLEFT", -16, -8)
-	UIDropDownMenu_SetWidth(channelDropdown, 220)
-	UIDropDownMenu_Initialize(channelDropdown, A.InitializeChannelModeDropdown)
-	state.channelModeDropdown = channelDropdown
-	local channelAnchor = A.CreateAlignedBottomAnchor(content, channelDropdown)
-
-	local announceModeHeader = A.CreateSectionHeader(content, A.L.announceMode, channelAnchor, -10)
+	local announceModeHeader = A.CreateSectionHeader(content, A.L.announceMode, warningAnchor, -20)
 	local announceModeDescription = A.CreateSectionDescription(content, A.L.announceModeDescription, announceModeHeader)
 	local announceModeDropdown = CreateFrame("Frame", "ValSpamsAnnounceModeDropdown", content, "UIDropDownMenuTemplate")
 	announceModeDropdown:SetPoint("TOPLEFT", announceModeDescription, "BOTTOMLEFT", -16, -8)

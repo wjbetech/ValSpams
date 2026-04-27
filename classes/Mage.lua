@@ -6,35 +6,6 @@ end
 
 A.RegisterSpellDefinition(
   {
-    key = "mage_polymorph",
-    class = "MAGE",
-    category = "crowd_control",
-    behavior = "target_aura",
-    flags = {
-      announceOnMiss = true,
-      announceOnResist = true,
-      announceOnImmune = true,
-      announceOnBreak = true,
-      announceTarget = true,
-      showRaidIcon = true
-    },
-    spellID = 118
-  }
-)
-
-A.RegisterSpellDefinition(
-  {
-    key = "mage_ice_block",
-    class = "MAGE",
-    category = "defensive",
-    behavior = "self_aura",
-    duration = 10,
-    spellID = 45438
-  }
-)
-
-A.RegisterSpellDefinition(
-  {
     key = "mage_counterspell",
     class = "MAGE",
     category = "interrupt",
@@ -47,23 +18,46 @@ A.RegisterSpellDefinition(
       showRaidIcon = true,
       interruptOnly = true
     },
-    spellID = 2139
+    spellIDs = { 2139 }
   }
 )
 
 A.RegisterSpellDefinition(
   {
-    key = "mage_spellsteal",
+    key = "mage_ice_block",
     class = "MAGE",
-    category = "offensive",
-    behavior = "cast_success",
+    category = "defensive",
+    behavior = "self_aura",
+    duration = 10,
+    spellIDs = { 45438 }
+  }
+)
+
+A.RegisterSpellDefinition(
+  {
+    key = "mage_polymorph",
+    class = "MAGE",
+    category = "crowd_control",
+    behavior = "target_aura",
     flags = {
-      dispelOnly = true,
+      announceOnMiss = true,
       announceOnResist = true,
       announceOnImmune = true,
+      announceOnBreak = true,
       announceTarget = true,
       showRaidIcon = true
     },
-    spellID = 30449
+    spellIDs = { 118, 12824, 12825, 12826, 28271, 28272 },
+    -- check this later
+    -- think we can bundle same duration items into one array
+    -- e.g. [12826, 28271, 28272]
+    durationBySpellID = {
+      [118] = 20,
+      [12824] = 30,
+      [12825] = 40,
+      [12826] = 50,
+      [28271] = 50,
+      [28272] = 50
+    }
   }
 )

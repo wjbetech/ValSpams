@@ -12,7 +12,6 @@ A.state.optionCheckboxes = A.state.optionCheckboxes or {}
 A.state.categoryCheckboxes = A.state.categoryCheckboxes or {}
 A.state.trackedSpellCheckboxes = A.state.trackedSpellCheckboxes or {}
 A.state.classPanels = A.state.classPanels or {}
-A.state.channelModeDropdown = A.state.channelModeDropdown or nil
 A.state.announceModeDropdown = A.state.announceModeDropdown or nil
 A.state.ccScopeDropdown = A.state.ccScopeDropdown or nil
 A.state.recentBreaks = A.state.recentBreaks or {}
@@ -49,10 +48,4 @@ A.announceModeOrder = {
 A.ccScopeOrder = {
 	"mine",
 	"all_tracked"
-}
-
-A.channelModeOrder = {
-	"priority",
-	"yell_only",
-	"say_only"
 }

@@ -19,16 +19,26 @@ function A.RegisterSpellDefinition(spellDefinition)
     return
   end
 
-  if not spellDefinition.key or not spellDefinition.class or not spellDefinition.spellID then
+  if not spellDefinition.key or not spellDefinition.class then
     return
   end
+
+	local resolvedSpellIDs = spellDefinition.spellIDs
+	if resolvedSpellIDs == nil and spellDefinition.spellID ~= nil then
+		resolvedSpellIDs = { spellDefinition.spellID }
+	end
+
+	if resolvedSpellIDs == nil or #resolvedSpellIDs == 0 then
+		return
+	end
 
 	local registryGroup = A.registry[spellDefinition.behavior]
 	if registryGroup == nil then
 		return
 	end
 
-	local spellName = GetSpellInfo(spellDefinition.spellID)
+	local primarySpellID = spellDefinition.spellID or resolvedSpellIDs[1]
+	local spellName = GetSpellInfo(primarySpellID)
 	if not spellName then
 		return
 	end
@@ -38,13 +48,17 @@ function A.RegisterSpellDefinition(spellDefinition)
 		class = spellDefinition.class,
     category = spellDefinition.category,
     behavior = spellDefinition.behavior,
-		spellID = spellDefinition.spellID,
+		spellID = primarySpellID,
+		spellIDs = resolvedSpellIDs,
+		spellName = spellName,
 		duration = spellDefinition.duration,
+    durationBySpellID = spellDefinition.durationBySpellID,
     flags = spellDefinition.flags or {},
-		spellName = spellName
 	}
 
-	registryGroup[spellDefinition.spellID] = storedDefinition
+	for _, spellID in ipairs(resolvedSpellIDs) do
+		registryGroup[spellID] = storedDefinition
+	end
 	A.registry.classSpellDefinitions[storedDefinition.class] =
 		A.registry.classSpellDefinitions[storedDefinition.class] or {}
 	table.insert(
